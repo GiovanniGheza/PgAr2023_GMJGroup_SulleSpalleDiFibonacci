@@ -1,30 +1,49 @@
 package main;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public abstract class CalcolatoreDellaPhi {
 	
 	private static ArrayList<Integer> numeriPrimiTrovati = new ArrayList<Integer>();
+	private static Map<Integer,Integer> phiTrovati = new HashMap<>();
 	
 	public static int calcolaPhi(int n) {
 		
+		//calcolo primi 100 000 numeri
+		//con TreeMap e questo if: 20345 ms
+		//con HashMap e questo if: 20321 ms
+		//senza questo if: 39621 ms
+		if(phiTrovati.containsKey(n)) {
+			return phiTrovati.get(n);
+		}
+		
 		//se e' uno il phi e' uno
-		if(n == 1)
+		if(n == 1) {
+			phiTrovati.put(n,1);
 			return 1;
+		}
 		
 		//se il numero e' primo il phi e' n - 1 (fonte: wikipedia)
-		if(isPrimo(n))
+		if(isPrimo(n)) {
+			phiTrovati.put(n, n - 1);
 			return n - 1;
+		}
 		
 		//primo caso, il numero e' una potenza di un numero primo
 		int[] potenzaDiPrimo = PotenzaDiPrimo(n);
-		if(!(potenzaDiPrimo[0] == 0 && potenzaDiPrimo[1] == 0))
-			return (int) ((potenzaDiPrimo[0] - 1)*Math.pow(potenzaDiPrimo[0], potenzaDiPrimo[1] - 1));
+		if(!(potenzaDiPrimo[0] == 0 && potenzaDiPrimo[1] == 0)) {
+			int phi = (int) ((potenzaDiPrimo[0] - 1)*Math.pow(potenzaDiPrimo[0], potenzaDiPrimo[1] - 1));
+			phiTrovati.put(n,phi);
+			return phi;
+		}
 		
 		//secondo caso: n = a*b, con MCD(a,b) = 1
 		int[] secondoCaso = SecondoCaso(n);
-		if(!(secondoCaso[0] == 0 && secondoCaso[1] == 0))
-			return calcolaPhi(secondoCaso[0])*calcolaPhi(secondoCaso[1]);
+		if(!(secondoCaso[0] == 0 && secondoCaso[1] == 0)) {
+			int phi = calcolaPhi(secondoCaso[0])*calcolaPhi(secondoCaso[1]);
+			phiTrovati.put(n,phi);
+			return phi;
+		}
 		
 		//caso qualcosa e' andato storto, ritorno -1 (un valore impossibile) come avvertimento
 		return -1;
@@ -123,15 +142,14 @@ public abstract class CalcolatoreDellaPhi {
 	 * @return vero se il numero e' primo, falso altrimenti
 	 */
 	public static boolean isPrimo(int n) {
-		//se la lista di numeri primi e' vuota aggiungo il 2
-		if(numeriPrimiTrovati.isEmpty()) {
-			numeriPrimiTrovati.add(2);
-		}
-		
 		//uno e' un numero primo
 		if(n == 1)
 			return true;
 		
+		//se la lista di numeri primi e' vuota aggiungo il 2
+		if(numeriPrimiTrovati.isEmpty()) {
+			numeriPrimiTrovati.add(2);
+		}
 		//se n e' piu' alto del piu' grande numero primo che possiedo
 		//devo calcolare nuovi numeri primi
 		if(n > numeriPrimiTrovati.get(numeriPrimiTrovati.size() - 1))
