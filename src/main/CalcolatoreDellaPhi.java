@@ -9,10 +9,7 @@ public abstract class CalcolatoreDellaPhi {
 	
 	public static int calcolaPhi(int n) {
 		
-		//calcolo primi 100 000 numeri
-		//con TreeMap e questo if: 20345 ms
-		//con HashMap e questo if: 20321 ms
-		//senza questo if: 39621 ms
+		//ho gia trovato il phi
 		if(phiTrovati.containsKey(n)) {
 			return phiTrovati.get(n);
 		}
@@ -30,17 +27,17 @@ public abstract class CalcolatoreDellaPhi {
 		}
 		
 		//primo caso, il numero e' una potenza di un numero primo
-		int[] potenzaDiPrimo = PotenzaDiPrimo(n);
-		if(!(potenzaDiPrimo[0] == 0 && potenzaDiPrimo[1] == 0)) {
-			int phi = (int) ((potenzaDiPrimo[0] - 1)*Math.pow(potenzaDiPrimo[0], potenzaDiPrimo[1] - 1));
+		int[] primoElevato = potenzaDiPrimo(n);
+		if(!(primoElevato[0] == 0 && primoElevato[1] == 0)) {
+			int phi = (int) ((primoElevato[0] - 1)*Math.pow(primoElevato[0], primoElevato[1] - 1));
 			phiTrovati.put(n,phi);
 			return phi;
 		}
 		
 		//secondo caso: n = a*b, con MCD(a,b) = 1
-		int[] secondoCaso = SecondoCaso(n);
-		if(!(secondoCaso[0] == 0 && secondoCaso[1] == 0)) {
-			int phi = calcolaPhi(secondoCaso[0])*calcolaPhi(secondoCaso[1]);
+		int[] aPERb = secondoCaso(n);
+		if(!(aPERb[0] == 0 && aPERb[1] == 0)) {
+			int phi = calcolaPhi(aPERb[0])*calcolaPhi(aPERb[1]);
 			phiTrovati.put(n,phi);
 			return phi;
 		}
@@ -54,7 +51,7 @@ public abstract class CalcolatoreDellaPhi {
 	 * @param n numero di cui si vuole sapere se il secondo caso avviene
 	 * @return vero se siamo nel secondo caso
 	 */
-	private static int[] SecondoCaso(int n) {
+	private static int[] secondoCaso(int n) {
 		
 		//le coppie sono quei numeri a e b che moltiplicati tra loro danno n
 		ArrayList<int[]> coppie = scomponi(n);
@@ -76,7 +73,7 @@ public abstract class CalcolatoreDellaPhi {
 	 * @param n - il numero da controllare
 	 * @return il numero primo e il suo esponente se n e' una potenza di primo, [0,0] altrimenti
 	 */
-	public static int[] PotenzaDiPrimo(int n) {
+	public static int[] potenzaDiPrimo(int n) {
 		if(numeriPrimiTrovati.isEmpty()) {
 			numeriPrimiTrovati.add(2);
 		}

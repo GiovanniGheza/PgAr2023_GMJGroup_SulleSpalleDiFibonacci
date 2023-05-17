@@ -9,7 +9,7 @@ public class MainEulero {
 			int phi = CalcolatoreDellaPhi.calcolaPhi(n);
 			tempo = System.currentTimeMillis() - tempo;
 			System.out.println("La phi di " + n + " e' " + phi 
-					+ "(calcolata in " + ((tempo < 1)? "meno di un": tempo) + " ms)");
+					+ " (calcolata in " + ((tempo < 1)? "meno di un": tempo) + "ms)");
 			
 			if(!InputDati.yesOrNo("----------\nLeggere un'altro numero?"))
 				break;
